@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; /* Change the background color here */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .result-container original_URL{
+            white-space: nowrap;
+            width: 10rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80rem;
+            height: 30rem;
+            text-align: center;
+            align-items: center;
+        }
+        h1 {
+            color: #007bff;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+        .result-container p {
+            margin: 10px 0;
+        }
+        .result-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Short URL</button>
+        </form>
+        {% if url_obj %}
+        <div class="result-container">
+            <p class="original_URL"><strong>Original URL:</strong> <span id="original-url">{{ url_obj.original_url }}</span> <button class="copy-button" onclick="copyToClipboard('original-url')">Copy</button></p>
+            <p><strong>Shortened URL:</strong> <span id="shortened-url">{{ request.build_absolute_uri }}{{ url_obj.short_url }}</span> <button class="copy-button" onclick="copyToClipboard('shortened-url')">Copy</button></p>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            const input = document.createElement('textarea');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            alert('Copied to clipboard');
+        }
+    </script>
+</body>
+</html>
